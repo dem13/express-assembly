@@ -1,8 +1,8 @@
-const express = require('express');
-const helmet = require('helmet');
-const morgan = require('morgan');
-const bodyParser = require('body-parser');
-const cors = require('cors');
+import express, {Request, Response} from "express";
+import helmet from "helmet";
+import morgan from "morgan";
+import bodyParser from "body-parser";
+import cors from "cors";
 
 const app = express();
 
@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 
-app.get('/', (req, res) => {
+app.get('/', (req: Request, res: Response) => {
     res.send({
         message: 'Hello, world!',
         data: req.body,
