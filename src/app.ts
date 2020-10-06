@@ -4,6 +4,9 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import cors from "cors";
 import methodOverride from 'method-override';
+import asyncHandler from "express-async-handler";
+import errorHandler from "./errors/errorHandler";
+import AppError from "./errors/appError";
 
 const app = express();
 
@@ -23,6 +26,18 @@ app.get('/', (req: Request, res: Response) => {
         method: req.method,
     });
 });
+
+app.get('/error', asyncHandler(async (req: Request, res: Response) => {
+    throw new AppError('This is error', 400);
+}))
+
+app.all('*', (req, res, next) => {
+    res.status(404).send({
+        message: 'Not found'
+    });
+})
+
+app.use(errorHandler);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
