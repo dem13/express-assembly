@@ -4,6 +4,7 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "env-lift": "0.0.3",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
     "helmet": "^4.1.1",
@@ -22,8 +23,8 @@
     "typescript": "^4.0.3"
   },
   "scripts": {
-    "dev": "nodemon src/app.ts",
-    "start": "tsc  & node ./build/app.js",
+    "dev": "nodemon src/server.ts",
+    "start": "tsc  & node ./build/server.js",
     "build": "tsc"
   }
 }
