@@ -8,6 +8,7 @@ import asyncHandler from "express-async-handler";
 import errorHandler from "../errors/errorHandler";
 import AppError from "../errors/appError";
 import LoaderOptions from "./loaderOptions";
+import config from 'config';
 
 export default (options: LoaderOptions) => {
   const app = options.express;
@@ -24,6 +25,7 @@ export default (options: LoaderOptions) => {
       message: 'Hello, world!',
       data: req.body,
       method: req.method,
+      title: config.get('appName')
     });
   });
 
