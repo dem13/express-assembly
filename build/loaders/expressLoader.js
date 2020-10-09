@@ -20,24 +20,29 @@ const method_override_1 = __importDefault(require("method-override"));
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const errorHandler_1 = __importDefault(require("../errors/errorHandler"));
 const appError_1 = __importDefault(require("../errors/appError"));
-exports.default = (options) => {
-    const app = options.express;
+const config_1 = __importDefault(require("config"));
+const testController_1 = __importDefault(require("../controllers/testController"));
+const resolve_1 = __importDefault(require("../helpers/resolve"));
+exports.default = (app, routers) => {
     app.use(helmet_1.default());
     app.use(morgan_1.default('combined'));
     app.use(body_parser_1.default.json());
     app.use(body_parser_1.default.urlencoded({ extended: true }));
     app.use(cors_1.default());
     app.use(method_override_1.default('_method'));
+    routers.forEach((router) => app.use(router.path, router.router));
     app.get('/', (req, res) => {
         res.send({
             message: 'Hello, world!',
             data: req.body,
             method: req.method,
+            title: config_1.default.get('appName')
         });
     });
     app.get('/error', express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
         throw new appError_1.default('This is error', 400);
     })));
+    app.get('/test', resolve_1.default(testController_1.default).test);
     app.all('*', (req, res, next) => {
         res.status(404).send({
             message: 'Not found'

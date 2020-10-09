@@ -10,8 +10,9 @@ import AppError from "../errors/appError";
 import config from 'config';
 import TestController from "../controllers/testController";
 import resolve from "../helpers/resolve";
+import AppRouter from "../types/appRouter";
 
-export default (app: Express) => {
+export default (app: Express, routers: Array<AppRouter>) => {
 
   app.use(helmet());
   app.use(morgan('combined'));
@@ -19,6 +20,8 @@ export default (app: Express) => {
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(cors());
   app.use(methodOverride('_method'))
+
+  routers.forEach((router: AppRouter) => app.use(router.path, router.router));
 
   app.get('/', (req: Request, res: Response) => {
     res.send({
