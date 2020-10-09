@@ -1,5 +1,6 @@
+import 'reflect-metadata';
 import express, {Express} from "express";
-  import expressLoader from "./loaders/expressLoader";
+import expressLoader from "./loaders/expressLoader";
 
 class App {
   public server?: Express;

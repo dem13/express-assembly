@@ -8,6 +8,8 @@ import asyncHandler from "express-async-handler";
 import errorHandler from "../errors/errorHandler";
 import AppError from "../errors/appError";
 import config from 'config';
+import TestController from "../controllers/testController";
+import resolve from "../helpers/resolve";
 
 export default (app: Express) => {
 
@@ -30,6 +32,8 @@ export default (app: Express) => {
   app.get('/error', asyncHandler(async (req: Request, res: Response) => {
     throw new AppError('This is error', 400);
   }))
+
+  app.get('/test', resolve(TestController).test);
 
   app.all('*', (req, res, next) => {
     res.status(404).send({
