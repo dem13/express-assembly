@@ -1,4 +1,4 @@
-import {Request, Response} from "express";
+import {Express, Request, Response} from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import bodyParser from "body-parser";
@@ -7,11 +7,9 @@ import methodOverride from 'method-override';
 import asyncHandler from "express-async-handler";
 import errorHandler from "../errors/errorHandler";
 import AppError from "../errors/appError";
-import LoaderOptions from "./loaderOptions";
 import config from 'config';
 
-export default (options: LoaderOptions) => {
-  const app = options.express;
+export default (app: Express) => {
 
   app.use(helmet());
   app.use(morgan('combined'));
