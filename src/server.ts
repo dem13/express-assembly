@@ -6,10 +6,10 @@ const port = config.get('port');
 
 const app = new App();
 
-app.init()
+app.init().then( () => {
+  const server = http.createServer(app.server);
 
-const server = http.createServer(app.server);
-
-server.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+  server.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
 });

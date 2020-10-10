@@ -12,30 +12,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("reflect-metadata");
-const express_1 = __importDefault(require("express"));
-const expressLoader_1 = __importDefault(require("./loaders/expressLoader"));
-const api_1 = __importDefault(require("./routes/api"));
-const databaseLoader_1 = __importDefault(require("./loaders/databaseLoader"));
-const tsyringe_1 = require("tsyringe");
+const resolve_1 = __importDefault(require("../helpers/resolve"));
+const User_1 = require("../entities/User");
 const typeorm_1 = require("typeorm");
-class App {
-    init() {
+class AuthService {
+    /**
+     * @todo Implement register method(I created this method now to test the database)
+     *
+     * @param userData
+     */
+    register(userData) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.server = express_1.default();
-            const routers = this.getRouters();
-            const database = yield databaseLoader_1.default();
-            if (!database) {
-                throw new Error('Failed to connect to database');
-            }
-            tsyringe_1.container.registerInstance(typeorm_1.Connection, database);
-            expressLoader_1.default(this.server, routers);
+            const db = resolve_1.default(typeorm_1.Connection);
+            let user = new User_1.User();
+            user.name = "Med Dev";
+            user.email = "dev@example.org";
+            user.password = 'hash';
+            console.log('Register...', userData);
+            return yield db.manager.save(user);
         });
     }
-    getRouters() {
-        return [
-            { path: '/api', router: api_1.default },
-        ];
-    }
 }
-exports.default = App;
+exports.default = AuthService;
