@@ -6,11 +6,11 @@ import cors from "cors";
 import methodOverride from 'method-override';
 import asyncHandler from "express-async-handler";
 import errorHandler from "../errors/errorHandler";
-import AppError from "../errors/appError";
+import AppError from "../errors/AppError";
 import config from 'config';
-import TestController from "../controllers/testController";
+import TestController from "../controllers/TestController";
 import resolve from "../helpers/resolve";
-import AppRouter from "../types/appRouter";
+import AppRouter from "../types/AppRouter";
 
 export default (app: Express, routers: Array<AppRouter>) => {
 

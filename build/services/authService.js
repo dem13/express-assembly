@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const resolve_1 = __importDefault(require("../helpers/resolve"));
 const User_1 = require("../entities/User");
 const typeorm_1 = require("typeorm");
+const bcrypt_1 = __importDefault(require("bcrypt"));
 class AuthService {
     /**
      * @todo Implement register method(I created this method now to test the database)
@@ -30,6 +31,16 @@ class AuthService {
             user.password = 'hash';
             console.log('Register...', userData);
             return yield db.manager.save(user);
+        });
+    }
+    hashPassword(password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bcrypt_1.default.hash(password, 10);
+        });
+    }
+    comparePassword(password, hash) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield bcrypt_1.default.compare(password, hash);
         });
     }
 }

@@ -1,6 +1,7 @@
 import resolve from "../helpers/resolve";
 import {User} from "../entities/User";
 import {Connection} from "typeorm";
+import bcrypt from 'bcrypt';
 
 class AuthService {
   /**
@@ -22,7 +23,13 @@ class AuthService {
     return await db.manager.save(user);
   }
 
+  async hashPassword(password: string) {
+    return await bcrypt.hash(password, 10);
+  }
 
+  async comparePassword (password: string, hash: string) {
+    return await bcrypt.compare(password, hash);
+  }
 }
 
 export default AuthService;

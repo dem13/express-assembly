@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import express, {Express} from "express";
 import expressLoader from "./loaders/expressLoader";
 import api from './routes/api';
-import AppRouter from "./types/appRouter";
+import AppRouter from "./types/AppRouter";
 import databaseLoader from "./loaders/databaseLoader";
 import {container} from "tsyringe";
 import {Connection} from 'typeorm';

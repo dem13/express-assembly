@@ -19,9 +19,9 @@ const cors_1 = __importDefault(require("cors"));
 const method_override_1 = __importDefault(require("method-override"));
 const express_async_handler_1 = __importDefault(require("express-async-handler"));
 const errorHandler_1 = __importDefault(require("../errors/errorHandler"));
-const appError_1 = __importDefault(require("../errors/appError"));
+const AppError_1 = __importDefault(require("../errors/AppError"));
 const config_1 = __importDefault(require("config"));
-const testController_1 = __importDefault(require("../controllers/testController"));
+const TestController_1 = __importDefault(require("../controllers/TestController"));
 const resolve_1 = __importDefault(require("../helpers/resolve"));
 exports.default = (app, routers) => {
     app.use(helmet_1.default());
@@ -40,9 +40,9 @@ exports.default = (app, routers) => {
         });
     });
     app.get('/error', express_async_handler_1.default((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-        throw new appError_1.default('This is error', 400);
+        throw new AppError_1.default('This is error', 400);
     })));
-    app.get('/test', resolve_1.default(testController_1.default).test);
+    app.get('/test', resolve_1.default(TestController_1.default).test);
     app.all('*', (req, res, next) => {
         res.status(404).send({
             message: 'Not found'
