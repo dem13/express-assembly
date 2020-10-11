@@ -1,0 +1,9 @@
+{
+  "appName": "Express-Assembly",
+
+  "dbHost": "localhost",
+  "dbPort" : 5432,
+  "dbUser": "postgres",
+  "dbPassword": "secret",
+  "dbName": ""
+}
