@@ -19,11 +19,14 @@ const api_1 = __importDefault(require("./routes/api"));
 const databaseLoader_1 = __importDefault(require("./loaders/databaseLoader"));
 const tsyringe_1 = require("tsyringe");
 const typeorm_1 = require("typeorm");
+const controllersLoader_1 = __importDefault(require("./loaders/controllersLoader"));
+const ControllerResolver_1 = __importDefault(require("./core/controllers/ControllerResolver"));
 class App {
     init() {
         return __awaiter(this, void 0, void 0, function* () {
             this.server = express_1.default();
-            const routers = this.getRouters();
+            yield this.loadControllers();
+            const routers = yield this.getRouters();
             const database = yield databaseLoader_1.default();
             if (!database) {
                 throw new Error('Failed to connect to database');
@@ -32,10 +35,22 @@ class App {
             expressLoader_1.default(this.server, routers);
         });
     }
+    loadControllers() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const controllerResolver = tsyringe_1.container.resolve(ControllerResolver_1.default);
+            /** @todo Refactor **/
+            const controllers = yield controllersLoader_1.default();
+            this.controllers = controllerResolver.resolveAll(controllers);
+            tsyringe_1.container.register('controllers', { useValue: this.controllers });
+        });
+    }
     getRouters() {
-        return [
-            { path: '/api', router: api_1.default },
-        ];
+        return __awaiter(this, void 0, void 0, function* () {
+            /** @todo Router auto import **/
+            return [
+                { path: '/api', router: yield api_1.default() },
+            ];
+        });
     }
 }
 exports.default = App;

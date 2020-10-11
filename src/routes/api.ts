@@ -1,15 +1,14 @@
 import express from 'express';
-import resolve from "../helpers/resolve";
-import ApiController from "../controllers/ApiController";
-import AuthController from "../controllers/AuthController";
-import asyncHandler from "express-async-handler";
+import action from "../helpers/action";
 
-const router = express.Router();
+export default async () => {
+  const router = express.Router();
 
-const authController = resolve(AuthController);
+  router.get('/', action('ApiController.index'));
 
-router.get('/', resolve(ApiController).index);
+  router.post('/auth/register', action('AuthController.register'));
 
-router.post('/auth/register', asyncHandler(authController.register));
+  router.post('/admin', action('Admin/AdminController.index'));
 
-export default router;
+  return router
+};

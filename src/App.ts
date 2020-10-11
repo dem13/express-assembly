@@ -6,14 +6,22 @@ import AppRouter from "./types/AppRouter";
 import databaseLoader from "./loaders/databaseLoader";
 import {container} from "tsyringe";
 import {Connection} from 'typeorm';
+import controllersLoader from "./loaders/controllersLoader";
+import ImportClass from "./types/ImportClass";
+import ControllerResolver from "./core/controllers/ControllerResolver";
+
 
 class App {
   public server?: Express;
 
+  public controllers: Map<string, ImportClass>
+
   async init() {
     this.server = express();
 
-    const routers = this.getRouters();
+    await this.loadControllers();
+
+    const routers = await this.getRouters();
 
     const database = await databaseLoader();
 
@@ -26,9 +34,21 @@ class App {
     expressLoader(this.server, routers);
   }
 
-  getRouters(): Array<AppRouter> {
+  async loadControllers() {
+    const controllerResolver = container.resolve(ControllerResolver);
+
+    /** @todo Refactor **/
+    const controllers = await controllersLoader();
+
+    this.controllers = controllerResolver.resolveAll(controllers);
+
+    container.register('controllers',{useValue: this.controllers});
+  }
+
+  async getRouters(): Promise<Array<AppRouter>> {
+    /** @todo Router auto import **/
     return [
-      {path: '/api', router: api},
+      {path: '/api', router: await api()},
     ]
   }
 }

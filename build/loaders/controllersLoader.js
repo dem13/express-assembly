@@ -12,12 +12,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
-const action_1 = __importDefault(require("../helpers/action"));
+const tsyringe_1 = require("tsyringe");
+const ControllerImporter_1 = __importDefault(require("../core/controllers/ControllerImporter"));
 exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
-    const router = express_1.default.Router();
-    router.get('/', action_1.default('ApiController.index'));
-    router.post('/auth/register', action_1.default('AuthController.register'));
-    router.post('/admin', action_1.default('Admin/AdminController.index'));
-    return router;
+    const controllerImporter = tsyringe_1.container.resolve(ControllerImporter_1.default);
+    return yield controllerImporter.load();
 });
