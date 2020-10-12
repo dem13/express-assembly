@@ -24,17 +24,21 @@ const config_1 = __importDefault(require("config"));
 const TestController_1 = __importDefault(require("../controllers/TestController"));
 const resolve_1 = __importDefault(require("../helpers/resolve"));
 const routing_controllers_1 = require("routing-controllers");
-exports.default = (app, routers) => {
+exports.default = (options) => {
+    let app = options.express;
     app.use(helmet_1.default());
     app.use(morgan_1.default('combined'));
     app.use(body_parser_1.default.json());
     app.use(body_parser_1.default.urlencoded({ extended: true }));
     app.use(cors_1.default());
     app.use(method_override_1.default('_method'));
-    routers.forEach((router) => app.use(router.path, router.router));
-    routing_controllers_1.useExpressServer(app, {
-        controllers: [__dirname + "/../controllers/*.js"] // and configure it the way you need (controllers, validation, etc.)
-    });
+    options.routers.forEach((router) => app.use(router.path, router.router));
+    if (options.useRoutingControllers) {
+        app = routing_controllers_1.useExpressServer(app, {
+            defaultErrorHandler: false,
+            controllers: [__dirname + "/../controllers/*.js", __dirname + "/../controllers/*.ts"] // and configure it the way you need (controllers, validation, etc.)
+        });
+    }
     app.get('/', (req, res) => {
         res.send({
             message: 'Hello, world!',

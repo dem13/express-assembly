@@ -13,8 +13,6 @@ import ControllerResolver from "./core/controllers/ControllerResolver";
 class App {
   public server?: Express;
 
-  public controllers: Map<string, ImportClass>
-
   async init() {
     this.server = express();
 
@@ -34,16 +32,7 @@ class App {
   }
 
   async loadControllers() {
-    const controllerResolver = container.resolve(ControllerResolver);
-
-    /** @todo Refactor **/
-    const controllers = await controllersLoader();
-
-    this.controllers = controllerResolver.resolveAll(controllers);
-
-    this.controllers = controllers;
-
-    container.register('controllers', {useValue: this.controllers});
+    container.register('controllers', {useValue: await controllersLoader()});
   }
 
   async getRouters(): Promise<Array<AppRouter>> {

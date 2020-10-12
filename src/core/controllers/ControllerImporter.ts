@@ -7,7 +7,7 @@ import ControllersMap from "../../types/ControllersMap";
  * directory to map so they can be resolved later
  */
 class ControllerImporter {
-  private readonly extension = '.ts';
+  private readonly extensions = ['.ts', '.js'];
   private readonly divider = '/';
   private readonly dir = __dirname + '/../../controllers';
 
@@ -45,7 +45,13 @@ class ControllerImporter {
 
       const controller = await import(path);
 
-      controllers.set(this.controllerFileToKey(file, prefix), {class: controller.default});
+      const key = this.controllerFileToKey(file, prefix);
+
+      if(!key) {
+        continue;
+      }
+
+      controllers.set(key, {class: controller.default});
     }
 
     return controllers;
@@ -59,7 +65,20 @@ class ControllerImporter {
    * @private
    */
   private controllerFileToKey(file: string, prefix: string = '') {
-    return prefix + file.substr(0, file.indexOf(this.extension));
+    let extension!: string;
+
+    for(let ext of this.extensions) {
+      if(file.endsWith(ext)) {
+        extension = ext;
+        break;
+      }
+    }
+
+    if(!extension) {
+      return;
+    }
+
+    return prefix + file.substr(0, file.indexOf(extension));
   }
 }
 

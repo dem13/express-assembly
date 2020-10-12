@@ -32,7 +32,7 @@ class App {
                 throw new Error('Failed to connect to database');
             }
             tsyringe_1.container.registerInstance(typeorm_1.Connection, database);
-            expressLoader_1.default(this.server, routers);
+            expressLoader_1.default({ express: this.server, routers, useRoutingControllers: true });
         });
     }
     loadControllers() {
@@ -41,6 +41,7 @@ class App {
             /** @todo Refactor **/
             const controllers = yield controllersLoader_1.default();
             this.controllers = controllerResolver.resolveAll(controllers);
+            this.controllers = controllers;
             tsyringe_1.container.register('controllers', { useValue: this.controllers });
         });
     }
