@@ -23,6 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const AuthService_1 = __importDefault(require("../services/AuthService"));
 const tsyringe_1 = require("tsyringe");
+const routing_controllers_1 = require("routing-controllers");
 let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
@@ -33,6 +34,7 @@ let AuthController = class AuthController {
     }
 };
 AuthController = __decorate([
+    routing_controllers_1.Controller(),
     tsyringe_1.injectable(),
     __metadata("design:paramtypes", [AuthService_1.default])
 ], AuthController);

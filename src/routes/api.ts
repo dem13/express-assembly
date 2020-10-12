@@ -6,8 +6,6 @@ export default async () => {
 
   router.get('/', action('ApiController.index'));
 
-  router.post('/auth/register', action('AuthController.register'));
-
   router.post('/admin', action('Admin/AdminController.index'));
 
   return router

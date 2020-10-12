@@ -10,7 +10,6 @@ import controllersLoader from "./loaders/controllersLoader";
 import ImportClass from "./types/ImportClass";
 import ControllerResolver from "./core/controllers/ControllerResolver";
 
-
 class App {
   public server?: Express;
 
@@ -25,13 +24,13 @@ class App {
 
     const database = await databaseLoader();
 
-    if(!database) {
+    if (!database) {
       throw new Error('Failed to connect to database');
     }
 
-    container.registerInstance<Connection>(Connection,  database);
+    container.registerInstance<Connection>(Connection, database);
 
-    expressLoader(this.server, routers);
+    expressLoader({express: this.server, routers, useRoutingControllers: true});
   }
 
   async loadControllers() {
@@ -42,7 +41,9 @@ class App {
 
     this.controllers = controllerResolver.resolveAll(controllers);
 
-    container.register('controllers',{useValue: this.controllers});
+    this.controllers = controllers;
+
+    container.register('controllers', {useValue: this.controllers});
   }
 
   async getRouters(): Promise<Array<AppRouter>> {

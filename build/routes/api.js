@@ -17,7 +17,6 @@ const action_1 = __importDefault(require("../helpers/action"));
 exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
     const router = express_1.default.Router();
     router.get('/', action_1.default('ApiController.index'));
-    router.post('/auth/register', action_1.default('AuthController.register'));
     router.post('/admin', action_1.default('Admin/AdminController.index'));
     return router;
 });
