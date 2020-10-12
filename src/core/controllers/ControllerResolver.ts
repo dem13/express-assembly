@@ -1,6 +1,7 @@
 import {container} from "tsyringe";
 import ImportClass from "../../types/ImportClass";
 import ControllersMap from "../../types/ControllersMap";
+import expressAsyncHandler from "express-async-handler";
 
 /**
  * Resolve controllers and its actions from global ioc container
@@ -77,7 +78,7 @@ class ControllerResolver {
       throw new Error(`Action ${actionName} not found in controller ${controllerInstance}`);
     }
 
-    return controllerInstance[actionName];
+    return expressAsyncHandler(controllerInstance[actionName]);
   }
 
   /**
