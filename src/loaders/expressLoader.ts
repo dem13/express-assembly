@@ -32,22 +32,6 @@ export default (options: {express: Express, routers: Array<AppRouter>, useRoutin
     });
   }
 
-
-  app.get('/', (req: Request, res: Response) => {
-    res.send({
-      message: 'Hello, world!',
-      data: req.body,
-      method: req.method,
-      title: config.get('appName')
-    });
-  });
-
-  app.get('/error', asyncHandler(async (req: Request, res: Response) => {
-    throw new AppError('This is error', 400);
-  }))
-
-  app.get('/test', resolve(TestController).test);
-
   app.all('*', (req, res, next) => {
     res.status(404).send({
       message: 'Not found'
