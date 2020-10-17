@@ -1,5 +1,4 @@
 import express from 'express';
-import action from "../helpers/action";
 import passport from "passport";
 import {OAuth2Server} from 'oauth2orize'
 import {container} from "tsyringe";
@@ -15,10 +14,6 @@ export default async () => {
     server.token(),
     server.errorHandler()
   );
-
-  router.get('/', action('ApiController.index'));
-
-  router.post('/admin', action('Admin/AdminController.index'));
 
   return router
 };
