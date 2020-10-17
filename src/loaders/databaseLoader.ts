@@ -11,7 +11,7 @@ export default async () => {
       username: config.get<string>('dbUser'),
       password: config.get<string>('dbPassword'),
       database: config.get<string>('dbName'),
-      entities: [__dirname + "/../entities/*.ts"],
+      entities: [__dirname + "/../entities/*.js", __dirname + "/../entities/*.ts"],
       synchronize: true,
     });
   } catch (err) {

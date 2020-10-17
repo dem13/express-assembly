@@ -1,9 +1,13 @@
 import resolve from "../helpers/resolve";
 import {User} from "../entities/User";
-import {Connection} from "typeorm";
+import {Connection, getRepository} from "typeorm";
 import bcrypt from 'bcrypt';
+import {AccessToken} from "../entities/AccessToken";
+import crypto from 'crypto';
+import {Client} from "../entities/Client";
 
 class AuthService {
+
   /**
    * @todo Implement register method(I created this method now to test the database)
    *
@@ -27,8 +31,23 @@ class AuthService {
     return await bcrypt.hash(password, 10);
   }
 
-  async comparePassword (password: string, hash: string) {
+  async comparePassword(password: string, hash: string) {
     return await bcrypt.compare(password, hash);
+  }
+
+  async generateAccessToken(user: User, client: Client, scope: string[]): Promise<AccessToken> {
+    const accessToken = new AccessToken();
+
+    accessToken.token = crypto.randomBytes(64).toString('hex');
+    accessToken.user = user;
+    accessToken.client = client;
+    accessToken.scope = scope || [];
+
+    const accessTokenRepo = getRepository(AccessToken);
+
+    await accessTokenRepo.save(accessToken);
+
+    return accessToken
   }
 }
 

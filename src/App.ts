@@ -7,8 +7,7 @@ import databaseLoader from "./loaders/databaseLoader";
 import {container} from "tsyringe";
 import {Connection} from 'typeorm';
 import controllersLoader from "./loaders/controllersLoader";
-import ImportClass from "./types/ImportClass";
-import ControllerResolver from "./core/controllers/ControllerResolver";
+import authLoader from "./loaders/authLoader";
 
 class App {
   public server?: Express;
@@ -18,8 +17,6 @@ class App {
 
     await this.loadControllers();
 
-    const routers = await this.getRouters();
-
     const database = await databaseLoader();
 
     if (!database) {
@@ -28,7 +25,12 @@ class App {
 
     container.registerInstance<Connection>(Connection, database);
 
-    expressLoader({express: this.server, routers, useRoutingControllers: true});
+    authLoader();
+    expressLoader({
+      express: this.server,
+      routers: await this.getRouters(),
+      useRoutingControllers: true
+    });
   }
 
   async loadControllers() {

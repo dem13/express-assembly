@@ -1,17 +1,13 @@
-import {Express, Request, Response} from "express";
+import {Express} from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 import bodyParser from "body-parser";
 import cors from "cors";
 import methodOverride from 'method-override';
-import asyncHandler from "express-async-handler";
 import errorHandler from "../errors/errorHandler";
-import AppError from "../errors/AppError";
-import config from 'config';
-import TestController from "../controllers/TestController";
-import resolve from "../helpers/resolve";
 import AppRouter from "../types/AppRouter";
 import {useExpressServer} from "routing-controllers";
+import passport from "passport";
 
 export default (options: {express: Express, routers: Array<AppRouter>, useRoutingControllers?: boolean}, ) => {
   let app = options.express;
@@ -22,6 +18,7 @@ export default (options: {express: Express, routers: Array<AppRouter>, useRoutin
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(cors());
   app.use(methodOverride('_method'))
+  app.use(passport.initialize());
 
   options.routers.forEach((router: AppRouter) => app.use(router.path, router.router));
 
