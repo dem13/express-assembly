@@ -8,6 +8,7 @@ import {User} from "../../entities/User";
 import {Client} from "../../entities/Client";
 import resolve from "../helpers/resolve";
 import AuthService from "../../services/AuthService";
+import PasswordEncoder from "../auth/PasswordEncoder";
 
 export default () => {
   const server = createServer();
@@ -28,7 +29,9 @@ export default () => {
     try {
       const user = await userRepo.findOne({email});
 
-      if (!user || !await authService.comparePassword(password, user.password || '')) return done(null, false);
+      const passwordEncoder = resolve<PasswordEncoder>("PasswordEncoder");
+
+      if (!user || !await passwordEncoder.check(password, user.password || '')) return done(null, false);
 
       const accessToken = await authService.generateAccessToken(user, client, scope);
 

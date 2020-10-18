@@ -8,6 +8,7 @@ import {container} from "tsyringe";
 import {Connection} from 'typeorm';
 import controllersLoader from "./core/loaders/controllersLoader";
 import authLoader from "./core/loaders/authLoader";
+import dependencyLoader from "./core/loaders/dependencyLoader";
 
 class App {
   public server?: Express;
@@ -15,7 +16,7 @@ class App {
   async init() {
     this.server = express();
 
-    await this.loadControllers();
+    dependencyLoader();
 
     const database = await databaseLoader();
 
@@ -25,6 +26,7 @@ class App {
 
     container.registerInstance<Connection>(Connection, database);
 
+    await this.loadControllers();
     authLoader();
     expressLoader({
       express: this.server,

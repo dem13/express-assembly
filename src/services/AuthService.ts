@@ -1,39 +1,25 @@
-import resolve from "../core/helpers/resolve";
 import {User} from "../entities/User";
 import UserModel from "../models/User";
-import {Connection, getRepository} from "typeorm";
-import bcrypt from 'bcrypt';
+import {getRepository} from "typeorm";
 import {AccessToken} from "../entities/AccessToken";
 import crypto from 'crypto';
 import {Client} from "../entities/Client";
+import UserService from "./UserService";
+import {autoInjectable} from "tsyringe";
 
+@autoInjectable()
 class AuthService {
+
+  constructor(private userService: UserService) {
+  }
 
   /**
    * @param userData
    */
   async register(userData: UserModel) {
-    const db = resolve(Connection);
+    const user = await this.userService.create(userData);
 
-    let user = new User();
-
-    user.name = userData.name;
-    user.email = userData.email;
-    user.password = await this.hashPassword(userData.password);
-
-    user = await db.manager.save(user);
-
-    delete user.password;
-
-    return user;
-  }
-
-  async hashPassword(password: string) {
-    return await bcrypt.hash(password, 10);
-  }
-
-  async comparePassword(password: string, hash: string) {
-    return await bcrypt.compare(password, hash);
+    return await this.generateAccessToken(user);
   }
 
   async generateAccessToken(user: User, client: Client | null = null, scope: string[] = []): Promise<AccessToken> {
@@ -48,7 +34,7 @@ class AuthService {
 
     await accessTokenRepo.save(accessToken);
 
-    return accessToken
+    return accessToken;
   }
 
   async findTokenWithUser(token: string): Promise<AccessToken | null> {

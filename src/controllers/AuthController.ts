@@ -11,10 +11,12 @@ class AuthController {
 
   @Post('/api/auth/register')
   async register(@Body() userData: User ) {
-    const user = await this.authService.register(userData);
-    const accessToken = await this.authService.generateAccessToken(user);
+    const accessToken = await this.authService.register(userData);
 
-    return {data: {user, access_token: accessToken.token}};
+    return {
+      user: accessToken.user,
+      access_token: accessToken.token
+    }
   }
 }
 
