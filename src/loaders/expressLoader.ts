@@ -9,7 +9,7 @@ import AppRouter from "../types/AppRouter";
 import {Action, useExpressServer} from "routing-controllers";
 import passport from "passport";
 
-export default (options: {express: Express, routers: Array<AppRouter>, useRoutingControllers?: boolean}, ) => {
+export default (options: { express: Express, routers: Array<AppRouter>, useRoutingControllers?: boolean },) => {
   let app = options.express;
 
   app.use(helmet());
@@ -22,13 +22,13 @@ export default (options: {express: Express, routers: Array<AppRouter>, useRoutin
 
   options.routers.forEach((router: AppRouter) => app.use(router.path, router.router));
 
-  if(options.useRoutingControllers) {
+  if (options.useRoutingControllers) {
     app = useExpressServer(app, {
       authorizationChecker: (action: Action, roles: string[]) => {
         return new Promise<boolean>(((resolve, reject) => {
-          passport.authenticate('bearer',{session: false}, (err, user, info) => {
-            if(err) return reject(err);
-            if(!user) return resolve(false);
+          passport.authenticate('bearer', {session: false}, (err, user, info) => {
+            if (err) return reject(err);
+            if (!user) return resolve(false);
 
             action.request.user = user;
 
@@ -36,7 +36,7 @@ export default (options: {express: Express, routers: Array<AppRouter>, useRoutin
           })(action.request, action.response, action.next);
         }));
       },
-      currentUserChecker: (action:Action) => {
+      currentUserChecker: (action: Action) => {
         return action.request.user
       },
       defaultErrorHandler: false,
@@ -44,15 +44,15 @@ export default (options: {express: Express, routers: Array<AppRouter>, useRoutin
     });
   }
 
-  /**
-   * @todo Fix bug: Get "Cannot set headers after they are then to the client"
-   * error when using routing controllers
-   */
   app.all('*', (req, res, next) => {
+    if (options.useRoutingControllers && res.headersSent) {
+      return next();
+    }
+
     res.status(404).send({
       message: 'Not found'
     });
-  })
+  });
 
   app.use(errorHandler);
 };
