@@ -7,14 +7,12 @@ import {Controller, Post, Req, Res} from "routing-controllers";
 @autoInjectable()
 class AuthController {
 
-  constructor(private authService: AuthService) {
-    console.log('AuthController created...');
-  }
+  constructor(private authService: AuthService) {}
 
   @Post('/api/auth/register')
   async register(@Req() req: Request, @Res() res: Response ) {
     const user = await this.authService.register(req.body);
-    res.send({soon: '...', user});
+    return ({soon: '...', user});
   }
 }
 

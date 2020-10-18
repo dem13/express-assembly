@@ -49,6 +49,19 @@ class AuthService {
 
     return accessToken
   }
+
+  async findTokenWithUser(token: string): Promise<AccessToken | null> {
+    const accessTokenRepo = getRepository(AccessToken);
+
+    const accessToken = await accessTokenRepo.findOne({token}, {relations: ['user']});
+
+    if (!accessToken) {
+      return null;
+    }
+
+    return accessToken;
+  }
+
 }
 
 export default AuthService;
