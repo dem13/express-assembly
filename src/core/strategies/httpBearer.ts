@@ -1,5 +1,5 @@
 import {Strategy as BearerStrategy} from 'passport-http-bearer';
-import resolve from "../../helpers/resolve";
+import resolve from "../helpers/resolve";
 import AuthService from "../../services/AuthService";
 
 export default new BearerStrategy(async function (token, done) {

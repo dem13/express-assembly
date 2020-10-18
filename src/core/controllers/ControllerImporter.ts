@@ -1,6 +1,6 @@
 import {promises as fs} from "fs";
-import ImportClass from "../../types/ImportClass";
-import ControllersMap from "../../types/ControllersMap";
+import ImportClass from "../types/ImportClass";
+import ControllersMap from "../types/ControllersMap";
 
 /**
  * This class imports controllers classes from specific

@@ -1,6 +1,6 @@
 import {container} from "tsyringe";
-import ControllerImporter from "../core/controllers/ControllerImporter";
-import ControllerResolver from "../core/controllers/ControllerResolver";
+import ControllerImporter from "../controllers/ControllerImporter";
+import ControllerResolver from "../controllers/ControllerResolver";
 
 
 export default async () => {

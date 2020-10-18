@@ -4,7 +4,7 @@ import morgan from "morgan";
 import bodyParser from "body-parser";
 import cors from "cors";
 import methodOverride from 'method-override';
-import errorHandler from "../core/errors/errorHandler";
+import errorHandler from "../errors/errorHandler";
 import AppRouter from "../types/AppRouter";
 import {Action, useExpressServer} from "routing-controllers";
 import passport from "passport";

@@ -1,13 +1,13 @@
 import 'reflect-metadata';
 import express, {Express} from "express";
-import expressLoader from "./loaders/expressLoader";
+import expressLoader from "./core/loaders/expressLoader";
 import api from './routes/api';
-import AppRouter from "./types/AppRouter";
-import databaseLoader from "./loaders/databaseLoader";
+import AppRouter from "./core/types/AppRouter";
+import databaseLoader from "./core/loaders/databaseLoader";
 import {container} from "tsyringe";
 import {Connection} from 'typeorm';
-import controllersLoader from "./loaders/controllersLoader";
-import authLoader from "./loaders/authLoader";
+import controllersLoader from "./core/loaders/controllersLoader";
+import authLoader from "./core/loaders/authLoader";
 
 class App {
   public server?: Express;

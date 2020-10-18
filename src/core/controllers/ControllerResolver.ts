@@ -1,6 +1,6 @@
 import {container} from "tsyringe";
-import ImportClass from "../../types/ImportClass";
-import ControllersMap from "../../types/ControllersMap";
+import ImportClass from "../types/ImportClass";
+import ControllersMap from "../types/ControllersMap";
 import expressAsyncHandler from "express-async-handler";
 
 /**
