@@ -28,7 +28,7 @@ export default () => {
     try {
       const user = await userRepo.findOne({email});
 
-      if (!user || !await authService.comparePassword(password, user.password)) return done(null, false);
+      if (!user || !await authService.comparePassword(password, user.password || '')) return done(null, false);
 
       const accessToken = await authService.generateAccessToken(user, client, scope);
 

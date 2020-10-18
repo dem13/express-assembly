@@ -1,5 +1,6 @@
-import resolve from "../helpers/resolve";
+import resolve from "../core/helpers/resolve";
 import {User} from "../entities/User";
+import UserModel from "../models/User";
 import {Connection, getRepository} from "typeorm";
 import bcrypt from 'bcrypt';
 import {AccessToken} from "../entities/AccessToken";
@@ -9,22 +10,22 @@ import {Client} from "../entities/Client";
 class AuthService {
 
   /**
-   * @todo Implement register method(I created this method now to test the database)
-   *
    * @param userData
    */
-  async register(userData: any) {
+  async register(userData: UserModel) {
     const db = resolve(Connection);
 
     let user = new User();
 
-    user.name = "Med Dev";
-    user.email = "dev@example.org";
-    user.password = 'hash';
+    user.name = userData.name;
+    user.email = userData.email;
+    user.password = await this.hashPassword(userData.password);
 
-    console.log('Register...', userData);
+    user = await db.manager.save(user);
 
-    return await db.manager.save(user);
+    delete user.password;
+
+    return user;
   }
 
   async hashPassword(password: string) {
@@ -35,12 +36,12 @@ class AuthService {
     return await bcrypt.compare(password, hash);
   }
 
-  async generateAccessToken(user: User, client: Client, scope: string[]): Promise<AccessToken> {
+  async generateAccessToken(user: User, client: Client | null = null, scope: string[] = []): Promise<AccessToken> {
     const accessToken = new AccessToken();
 
     accessToken.token = crypto.randomBytes(64).toString('hex');
     accessToken.user = user;
-    accessToken.client = client;
+    if(client) accessToken.client = client;
     accessToken.scope = scope || [];
 
     const accessTokenRepo = getRepository(AccessToken);

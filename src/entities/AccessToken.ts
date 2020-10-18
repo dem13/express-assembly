@@ -13,7 +13,7 @@ export class AccessToken {
   @ManyToOne(() => User)
   user: User;
 
-  @ManyToOne(() => Client)
+  @ManyToOne(() => Client, {nullable: true})
   client: Client;
 
   @Column("json")
