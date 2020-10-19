@@ -1,4 +1,5 @@
 import {container} from "tsyringe";
+
 import PasswordEncoder from "../auth/PasswordEncoder";
 import BcryptPasswordEncoder from "../auth/BcryptPasswordEncoder";
 

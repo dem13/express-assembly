@@ -1,10 +1,11 @@
-import {createConnection} from 'typeorm';
 import config from 'config';
+import {container} from "tsyringe";
+import {Connection, createConnection} from 'typeorm';
 
 
 export default async () => {
   try {
-    return await createConnection({
+     const database = await createConnection({
       type: 'postgres',
       host: config.get<string>('dbHost'),
       port: config.get<number>('dbPort'),
@@ -14,6 +15,15 @@ export default async () => {
       entities: [__dirname + "/../../entities/*.js", __dirname + "/../../entities/*.ts"],
       synchronize: true,
     });
+
+
+    if (!database) {
+      throw new Error('Failed to connect to database');
+    }
+
+    container.registerInstance<Connection>(Connection, database);
+
+    return database;
   } catch (err) {
     console.log(err);
   }

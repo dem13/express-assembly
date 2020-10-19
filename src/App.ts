@@ -1,48 +1,43 @@
 import 'reflect-metadata';
+
+import {container} from "tsyringe";
 import express, {Express} from "express";
-import expressLoader from "./core/loaders/expressLoader";
+
 import api from './routes/api';
 import AppRouter from "./core/types/AppRouter";
-import databaseLoader from "./core/loaders/databaseLoader";
-import {container} from "tsyringe";
-import {Connection} from 'typeorm';
-import controllersLoader from "./core/loaders/controllersLoader";
 import authLoader from "./core/loaders/authLoader";
-import dependencyLoader from "./core/loaders/dependencyLoader";
+import expressLoader from "./core/loaders/expressLoader";
+import databaseLoader from "./core/loaders/databaseLoader";
+import controllersLoader from "./core/loaders/controllersLoader";
+import dependenciesLoader from "./core/loaders/dependenciesLoader";
 
 class App {
   public server?: Express;
 
+  private loaders = [
+    dependenciesLoader,
+    databaseLoader,
+    controllersLoader,
+    authLoader,
+    expressLoader
+  ];
+
   async init() {
     this.server = express();
 
-    dependencyLoader();
+    container.registerInstance<Express>("Express", this.server);
+    container.registerInstance<Array<AppRouter>>("routers", await this.getRouters());
 
-    const database = await databaseLoader();
 
-    if (!database) {
-      throw new Error('Failed to connect to database');
+    for (const loader of this.loaders) {
+      await loader();
     }
-
-    container.registerInstance<Connection>(Connection, database);
-
-    await this.loadControllers();
-    authLoader();
-    expressLoader({
-      express: this.server,
-      routers: await this.getRouters(),
-      useRoutingControllers: true
-    });
   }
 
-  async loadControllers() {
-    container.register('controllers', {useValue: await controllersLoader()});
-  }
-
-  async getRouters(): Promise<Array<AppRouter>> {
+   getRouters(): Array<AppRouter> {
     /** @todo Router auto import **/
     return [
-      {path: '/api', router: await api()},
+      {path: '/api', router: api},
     ]
   }
 }

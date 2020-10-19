@@ -1,8 +1,9 @@
-import {IRouter} from "express";
+import {Router} from "express";
 
 type AppRouter = {
   path: string,
-  router: IRouter
+  router: () => Promise<Router>
 }
+
 
 export default AppRouter;

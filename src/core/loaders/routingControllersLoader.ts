@@ -1,6 +1,6 @@
+import passport from "passport";
 import {Express} from "express";
 import {Action, useExpressServer} from "routing-controllers";
-import passport from "passport";
 
 export default (app: Express): Express => {
   return useExpressServer(app, {

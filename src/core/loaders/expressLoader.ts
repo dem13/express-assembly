@@ -1,16 +1,19 @@
-import {Express} from "express";
+import cors from "cors";
+import config from "config";
 import helmet from "helmet";
 import morgan from "morgan";
-import bodyParser from "body-parser";
-import cors from "cors";
-import methodOverride from 'method-override';
-import errorHandler from "../errors/errorHandler";
-import AppRouter from "../types/AppRouter";
+import {Express} from "express";
 import passport from "passport";
+import {container} from "tsyringe";
+import methodOverride from 'method-override';
+
+import bodyParser from "body-parser";
+import AppRouter from "../types/AppRouter";
+import errorHandler from "../errors/errorHandler";
 import routingControllersLoader from "./routingControllersLoader";
 
-export default (options: { express: Express, routers: Array<AppRouter>, useRoutingControllers?: boolean },) => {
-  let app = options.express;
+export default async () => {
+  let app = container.resolve<Express>("Express");
 
   app.use(helmet());
   app.use(morgan('combined'));
@@ -20,14 +23,16 @@ export default (options: { express: Express, routers: Array<AppRouter>, useRouti
   app.use(methodOverride('_method'))
   app.use(passport.initialize());
 
-  options.routers.forEach((router: AppRouter) => app.use(router.path, router.router));
+  for (const router of container.resolve<Array<AppRouter>>("routers")) {
+    app.use(router.path, await router.router());
+  }
 
-  if (options.useRoutingControllers) {
+  if (config.get("app.useRoutingControllers")) {
     app = routingControllersLoader(app);
   }
 
   app.all('*', (req, res, next) => {
-    if (options.useRoutingControllers && res.headersSent) {
+    if (config.get("app.useRoutingControllers") && res.headersSent) {
       return next();
     }
 

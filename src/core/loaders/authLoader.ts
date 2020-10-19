@@ -1,14 +1,15 @@
 import passport from "passport";
-import oauth2orize, {createServer, OAuth2Server} from 'oauth2orize';
-import oauth2ClientPasswordStrategy from "../strategies/oauth2ClientPassword";
-import httpBearer from "../strategies/httpBearer";
 import {container} from "tsyringe";
 import {getRepository} from "typeorm";
+import oauth2orize, {createServer, OAuth2Server} from 'oauth2orize';
+
+import resolve from "../helpers/resolve";
 import {User} from "../../entities/User";
 import {Client} from "../../entities/Client";
-import resolve from "../helpers/resolve";
+import httpBearer from "../strategies/httpBearer";
 import AuthService from "../../services/AuthService";
 import PasswordEncoder from "../auth/PasswordEncoder";
+import oauth2ClientPasswordStrategy from "../strategies/oauth2ClientPassword";
 
 export default () => {
   const server = createServer();
