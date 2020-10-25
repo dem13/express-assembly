@@ -27,4 +27,13 @@ export default class UserService {
 
     return user;
   }
+
+  /**
+   * Check if user with proved email already exists
+   *
+   * @param email
+   */
+  async userExists(email: string): Promise<boolean> {
+     return !!await this.userRepo.findOne({email});
+  }
 }

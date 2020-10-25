@@ -6,6 +6,7 @@ import crypto from 'crypto';
 import {Client} from "../entities/Client";
 import UserService from "./UserService";
 import {autoInjectable} from "tsyringe";
+import {UserAlreadyExistsError} from "../errors/UserAlreadyExistsError";
 
 @autoInjectable()
 class AuthService {
@@ -17,6 +18,10 @@ class AuthService {
    * @param userData
    */
   async register(userData: UserModel) {
+    if(await this.userService.userExists(userData.email)) {
+      throw new UserAlreadyExistsError(`User with email ${userData.email} already exists.`);
+    }
+
     const user = await this.userService.create(userData);
 
     return await this.generateAccessToken(user);
@@ -48,7 +53,6 @@ class AuthService {
 
     return accessToken;
   }
-
 }
 
 export default AuthService;

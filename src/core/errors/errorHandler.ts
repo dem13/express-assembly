@@ -10,25 +10,26 @@ import App from "../../App";
  * @param res
  * @param next
  */
-export default (err: AppError, req: Request, res: Response, next: NextFunction) => {
+export default (err: any, req: Request, res: Response, next: NextFunction) => {
   const status = err.httpCode || 500;
 
+  let response: any = {message: 'Server error'};
+
+  if (status < 500) {
+    response.message = err.message;
+
+    response.errors = err.errors || undefined;
+  }
+
   if (process.env.NODE_ENV === 'development') {
-    return res.status(status).send({
-      status: err.httpCode,
+    response = {
+      ...response,
+      code: err.httpCode,
       error: err,
       message: err.message,
       stack: err.stack
-    });
+    }
   }
 
-  let message = 'Server error';
-
-  if (status < 500) {
-    message = err.message;
-  }
-
-  res.status(status).send({
-    message: message,
-  });
+  res.status(status).send(response);
 };
